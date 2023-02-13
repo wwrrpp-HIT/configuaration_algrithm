@@ -36,16 +36,21 @@ class ConfigurationMapping:
         self.init_edges = init_config.get('module_edges')
         self.goal_edges = goal_config.get('module_edges')
         self.init_config = Configuration(init_config)
+        self.goal_config = Configuration(goal_config)
 
     def plot_goal_config(self):
+        edge_attr = {}
         x = np.array(self.goal_adjacency)
         modules_num = len(x)
-        rootnode = self.init_config.find_root()
-        g = nx.Graph()
-        g.add_nodes_from(range(0, modules_num), color='blue')
-        g.add_edges_from(self.goal_edges)
-        g.add_node(rootnode[0], color='red')
-        print(nx.get_node_attributes(g, 'color'))
+        rootnode = self.goal_config.find_root()
+        # g = nx.Graph()
+        g = nx.from_numpy_matrix(x)
+        # g.add_nodes_from(range(0, modules_num), color='blue')
+        # g.add_edges_from(self.goal_edges)
+        # g.add_node(rootnode[0], color='red')
+        #
+        # print(nx.get_node_attributes(g, 'color'))
+        print(list(nx.bfs_edges(g, rootnode[0])))  # 从根节点开始以bfs方式向叶搜索边
         nx.draw(g, with_labels=True)
         plt.show()
 
@@ -75,5 +80,6 @@ config_cross = {'config': 'config_cross',
                      [0, 0, 0, 1, 0, 0, 0]],
                 'module_edges': [(0, 1), (1, 2), (2, 3), (3, 4), (3, 5), (3, 6)],
                 }
-mapping = ConfigurationMapping(config_shizi, config_shizi)
+# mapping = ConfigurationMapping(config_shizi, config_shizi)
+mapping = ConfigurationMapping(config_tu, config_tu)
 mapping.plot_goal_config()
